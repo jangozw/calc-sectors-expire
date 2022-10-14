@@ -1,0 +1,21 @@
+[package]
+name = "calc-sectors-expire"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+regex = "1"
+util={path="./util"}
+
+[dependencies.clap]
+version = "3.2"
+features = ["derive"]
+[dependencies.tracing]
+version = "0.1"
+[dependencies.tracing-subscriber]
+version = "0.3"
+features = ["env-filter", "parking_lot"]
+[dependencies.anyhow]
+version = "1"
