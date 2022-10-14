@@ -48,13 +48,13 @@ impl Command {
 
 #[derive(Debug, Parser)]
 pub struct Run {
-    #[clap(long = "begin_epoch")]
+    #[clap(long = "begin_epoch", help="int")]
     pub begin_epoch: u64,
 
-    #[clap(long = "expect_exp_power")]
+    #[clap(long = "expect_exp_power", help ="eg: 1P,2T,10G")]
     pub expect_exp_power: String,
 
-    #[clap(long = "files")]
+    #[clap(long = "files", help="filenames, eg: --files a.txt --files b.txt")]
     pub files: Vec<String>,
 }
 
@@ -65,13 +65,18 @@ pub struct SectorInfo {
 }
 
 fn get_expect_exp_power_g(text: String) -> Result<u64> {
-    let reg = Regex::new(r"(\d+)(P|G)")?;
+    let reg = Regex::new(r"^(\d+)(P|G|T)$")?;
     for cap in reg.captures_iter(&text.to_ascii_uppercase()) {
         let power: u64 = cap.get(1).unwrap().as_str().parse::<u64>()?;
+        if power <=0 {
+            return Err(anyhow::Error::msg("parsed power is 0"));
+        }
         let unit = cap.get(2).unwrap().as_str();
         // println!("{:?} {:?}", power, unit);
         if unit == "P" {
             return Ok(power * 1024 * 1024);
+        } else if unit == "T"{
+            return Ok(power * 1024);
         }
         return Ok(power);
     }
